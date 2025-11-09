@@ -88,14 +88,14 @@ const About = () => {
               transition={{ duration: 0.6, ease: "easeOut", delay: 0.3 }}
               viewport={{ once: true }}
             >
-              <div className="text-center p-4 border border-gray-200 dark:border-gray-700 rounded-lg">
+              {/* <div className="text-center p-4 border border-gray-200 dark:border-gray-700 rounded-lg">
                 <div className="text-2xl font-bold text-gray-900 dark:text-white">50+</div>
                 <div className="text-sm text-gray-600 dark:text-gray-400">Projects Completed</div>
               </div>
               <div className="text-center p-4 border border-gray-200 dark:border-gray-700 rounded-lg">
                 <div className="text-2xl font-bold text-gray-900 dark:text-white">3+</div>
                 <div className="text-sm text-gray-600 dark:text-gray-400">Years Experience</div>
-              </div>
+              </div> */}
             </motion.div>
           </motion.div>
 
