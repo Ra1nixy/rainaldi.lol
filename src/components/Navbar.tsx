@@ -1,11 +1,11 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Sun, Moon, Menu, X, Github, Linkedin, Mail } from 'lucide-react';
+import {  Menu, X, Github, Linkedin, Mail } from 'lucide-react';
 
 const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [theme, setTheme] = useState<'light' | 'dark'>('light');
+ 
 
   useEffect(() => {
     const handleScroll = () => {
@@ -16,11 +16,7 @@ const Navbar = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  const toggleTheme = () => {
-    const newTheme = theme === 'light' ? 'dark' : 'light';
-    setTheme(newTheme);
-    document.documentElement.classList.toggle('dark');
-  };
+
 
   const navItems = [
     { name: 'About', href: '#about' },
@@ -55,16 +51,19 @@ const Navbar = () => {
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
           >
-            <div className="p-2 bg-gray-900 rounded-lg flex items-center justify-center">
+            <div className="flex items-center gap-2">
+            {/* <div className="p-2 rounded-lg flex items-center justify-center">
                 <img
-                    src="../img/rainixy.png"
-                    alt="Rainaldi Logo"
-                    className="h-8 w-8 object-contain"
+                src="/img/rainixy.png"
+                alt="Rainaldi Logo"
+                className="h-8 w-8 object-contain"
                 />
-                </div>
-            <span className="text-xl font-bold bg-white bg-clip-text text-transparent">
-              Ra1nixy
+            </div> */}
+            <span className="text-xl font-bold text-gray-900 dark:text-white transition-colors">
+                Ra1nixy
             </span>
+            </div>
+
           </motion.div>
 
           {/* Desktop Navigation */}
@@ -114,13 +113,13 @@ const Navbar = () => {
 
           {/* Mobile Menu Button */}
           <div className="flex md:hidden items-center space-x-4">
-            <motion.button
+            {/* <motion.button
               onClick={toggleTheme}
               className="p-2 rounded-lg bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400"
               whileTap={{ scale: 0.9 }}
             >
               {theme === 'light' ? <Moon className="h-5 w-5" /> : <Sun className="h-5 w-5" />}
-            </motion.button>
+            </motion.button> */}
 
             <motion.button
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
