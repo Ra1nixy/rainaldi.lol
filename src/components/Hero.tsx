@@ -120,7 +120,7 @@ const Hero = () => {
           >
            <div className="w-full h-full rounded-full bg-gray-100 dark:bg-gray-800 flex items-center justify-center border-2 border-gray-200 dark:border-gray-700 overflow-hidden">
             <img
-               src="/src/img/aldi.PNG"
+               src="../img/aldi.PNG"
                 alt="Foto Rainaldi"
                 className="object-cover w-full h-full"
             />

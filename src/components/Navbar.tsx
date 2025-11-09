@@ -57,7 +57,7 @@ const Navbar = () => {
           >
             <div className="p-2 bg-gray-900 rounded-lg flex items-center justify-center">
                 <img
-                    src="/src/img/rainixy.png"
+                    src="../img/rainixy.png"
                     alt="Rainaldi Logo"
                     className="h-8 w-8 object-contain"
                 />
