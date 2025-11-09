@@ -27,19 +27,19 @@ const Contact = () => {
     {
       icon: Github,
       label: 'GitHub',
-      href: 'https://github.com/rainaldi',
+      href: 'https://github.com/Ra1nixy',
       color: 'hover:text-gray-700 dark:hover:text-white'
     },
     {
       icon: Linkedin,
       label: 'LinkedIn',
-      href: 'https://linkedin.com/in/rainaldi',
+      href: '#',
       color: 'hover:text-gray-700 dark:hover:text-white'
     },
     {
       icon: Instagram,
       label: 'Instagram',
-      href: 'https://instagram.com/rainaldi',
+      href: 'https://instagram.com/__rainaldiputra',
       color: 'hover:text-gray-700 dark:hover:text-white'
     }
   ];
