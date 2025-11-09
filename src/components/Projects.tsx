@@ -4,18 +4,9 @@ import { ExternalLink, Github, Globe } from 'lucide-react';
 const Projects = () => {
   const projects = [
     { 
-      title: "Sistem Administrasi Magang PN Kebumen", 
+      title: "Sistem Magang PN Kebumen", 
       description: "Sistem administrasi dan presensi magang berbasis Laravel dengan fitur manajemen peserta, absensi QR code, dan laporan kegiatan.",
       technologies: ["Laravel", "MySQL", "Bootstrap", "JavaScript", "QR Code"],
-      image: "/api/placeholder/400/250",
-      demoLink: "#",
-      githubLink: "#",
-      featured: true
-    },
-    { 
-      title: "Sistem Presensi Universitas Putra Bangsa", 
-      description: "Sistem administrasi dan presensi magang berbasis Laravel dengan fitur manajemen peserta, absensi QR code, dan laporan kegiatan.",
-      technologies: ["Laravel", "MySQL", "Bootstrap", "React.js", "QR Code"],
       image: "/api/placeholder/400/250",
       demoLink: "#",
       githubLink: "#",
@@ -38,31 +29,8 @@ const Projects = () => {
       demoLink: "https://portofolio-rainaldi.web.app",
       githubLink: "#",
       featured: false
-    },
+    }
   ];
-
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        delayChildren: 0.3,
-        staggerChildren: 0.2
-      }
-    }
-  };
-
-  const itemVariants = {
-    hidden: { y: 20, opacity: 0 },
-    visible: {
-      y: 0,
-      opacity: 1,
-      transition: {
-        duration: 0.5,
-        ease: "easeOut"
-      }
-    }
-  };
 
   return (
     <section id="projects" className="py-24 px-4 sm:px-6 lg:px-8 bg-gray-50 dark:bg-gray-800">
@@ -71,7 +39,7 @@ const Projects = () => {
           className="text-center mb-16"
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
+          transition={{ duration: 0.6, ease: "easeOut" }}
           viewport={{ once: true }}
         >
           <h2 className="text-4xl md:text-5xl font-bold mb-6 text-gray-900 dark:text-white">
@@ -83,17 +51,14 @@ const Projects = () => {
           </p>
         </motion.div>
 
-        <motion.div
-          className="grid md:grid-cols-2 lg:grid-cols-3 gap-8"
-          variants={containerVariants}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true }}
-        >
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
           {projects.map((project, index) => (
             <motion.div
               key={index}
-              variants={itemVariants}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, ease: "easeOut", delay: index * 0.1 }}
+              viewport={{ once: true }}
               className="group bg-white dark:bg-gray-900 rounded-xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden border border-gray-200 dark:border-gray-700"
               whileHover={{ y: -5 }}
             >
@@ -158,14 +123,14 @@ const Projects = () => {
               </div>
             </motion.div>
           ))}
-        </motion.div>
+        </div>
 
         {/* CTA Section */}
         <motion.div
           className="text-center mt-16"
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.3 }}
+          transition={{ duration: 0.6, ease: "easeOut", delay: 0.3 }}
           viewport={{ once: true }}
         >
           <div className="bg-white dark:bg-gray-900 rounded-2xl p-8 border border-gray-200 dark:border-gray-700 max-w-2xl mx-auto">

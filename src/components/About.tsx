@@ -11,42 +11,29 @@ const About = () => {
     {
       icon: Server,
       title: 'Backend Development',
-      description: 'Laravel'
+      description: 'Laravel, Node.js, Express, RESTful APIs'
     },
     {
       icon: Database,
       title: 'Database & Storage',
-      description: 'Firestore, MySQL'
+      description: 'Firebase, MySQL, MongoDB, PostgreSQL'
+    },
+    {
+      icon: Smartphone,
+      title: 'Mobile Development',
+      description: 'React Native, Flutter, PWA'
     },
     {
       icon: Palette,
       title: 'UI/UX Design',
-      description: 'Figma'
+      description: 'Figma, Adobe XD, Prototyping, Design Systems'
     },
+    {
+      icon: Zap,
+      title: 'DevOps & Tools',
+      description: 'Git, Docker, CI/CD, AWS, Vercel'
+    }
   ];
-
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        delayChildren: 0.3,
-        staggerChildren: 0.2
-      }
-    }
-  };
-
-  const itemVariants = {
-    hidden: { y: 20, opacity: 0 },
-    visible: {
-      y: 0,
-      opacity: 1,
-      transition: {
-        duration: 0.5,
-        ease: "easeOut"
-      }
-    }
-  };
 
   return (
     <section id="about" className="py-24 px-4 sm:px-6 lg:px-8 bg-white dark:bg-gray-900">
@@ -55,7 +42,7 @@ const About = () => {
           className="text-center mb-16"
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
+          transition={{ duration: 0.6, ease: "easeOut" }}
           viewport={{ once: true }}
         >
           <h2 className="text-4xl md:text-5xl font-bold mb-6 text-gray-900 dark:text-white">
@@ -69,7 +56,7 @@ const About = () => {
           <motion.div
             initial={{ opacity: 0, x: -30 }}
             whileInView={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.6 }}
+            transition={{ duration: 0.6, ease: "easeOut" }}
             viewport={{ once: true }}
           >
             <h3 className="text-2xl md:text-3xl font-bold mb-6 text-gray-800 dark:text-gray-200">
@@ -98,7 +85,7 @@ const About = () => {
               className="grid grid-cols-2 gap-6 mt-8"
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.3 }}
+              transition={{ duration: 0.6, ease: "easeOut", delay: 0.3 }}
               viewport={{ once: true }}
             >
               <div className="text-center p-4 border border-gray-200 dark:border-gray-700 rounded-lg">
@@ -113,17 +100,14 @@ const About = () => {
           </motion.div>
 
           {/* Skills Grid */}
-          <motion.div
-            variants={containerVariants}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true }}
-            className="grid grid-cols-2 gap-4"
-          >
+          <div className="grid grid-cols-2 gap-4">
             {skills.map((skill, index) => (
               <motion.div
                 key={skill.title}
-                variants={itemVariants}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, ease: "easeOut", delay: index * 0.1 }}
+                viewport={{ once: true }}
                 className="p-6 border border-gray-200 dark:border-gray-700 rounded-lg hover:border-gray-300 dark:hover:border-gray-600 transition-all duration-300 group bg-white dark:bg-gray-800"
                 whileHover={{ y: -5, scale: 1.02 }}
               >
@@ -140,7 +124,7 @@ const About = () => {
                 </div>
               </motion.div>
             ))}
-          </motion.div>
+          </div>
         </div>
 
         {/* Philosophy Section */}
@@ -148,7 +132,7 @@ const About = () => {
           className="text-center max-w-4xl mx-auto"
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
+          transition={{ duration: 0.6, ease: "easeOut" }}
           viewport={{ once: true }}
         >
           <div className="border-t border-gray-200 dark:border-gray-700 pt-12">

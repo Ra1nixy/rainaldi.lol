@@ -1,7 +1,7 @@
 import { motion } from 'framer-motion';
 import { useEffect, useState } from 'react';
 import { ChevronDown, Download, Github, Linkedin, Mail } from 'lucide-react';
-import aldiPhoto from "../img/aldi.PNG";
+
 const Hero = () => {
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   const [isVisible, setIsVisible] = useState(false);
@@ -51,20 +51,21 @@ const Hero = () => {
     }
   };
 
-  const itemVariants = {
-    hidden: { y: 20, opacity: 0 },
-    visible: {
-      y: 0,
-      opacity: 1,
-      transition: {
-        duration: 0.5,
-        ease: "easeOut"
-      }
-    }
-  };
+//   const itemVariants = {
+//     hidden: { y: 20, opacity: 0 },
+//     visible: {
+//       y: 0,
+//       opacity: 1,
+//       transition: {
+//         duration: 0.5,
+//         ease: "easeOut"
+//       }
+//     }
+//   };
 
   return (
- <section className="relative h-screen flex flex-col justify-center items-center text-center overflow-hidden bg-white dark:bg-gray-900 pt-24">
+   <section className="relative h-screen flex flex-col justify-center items-center text-center overflow-hidden bg-white dark:bg-gray-900 pt-24">
+      {/* Animated Background Elements */}
       {/* Animated Background Elements */}
       <div 
         className="absolute inset-0 opacity-30 pointer-events-none"
@@ -108,18 +109,18 @@ const Hero = () => {
         {/* Profile Image/Badge */}
         <motion.div
           className="relative mb-8"
-          variants={itemVariants}
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, ease: "easeOut" }}
         >
           <motion.div
             className="w-32 h-32 mx-auto mb-6 rounded-full border-4 border-gray-900 dark:border-white p-1 shadow-lg bg-white dark:bg-gray-900"
             whileHover={{ scale: 1.05 }}
             transition={{ type: "spring", stiffness: 300 }}
           >
-
-
-            <div className="w-full h-full rounded-full bg-gray-100 dark:bg-gray-800 flex items-center justify-center border-2 border-gray-200 dark:border-gray-700 overflow-hidden">
+           <div className="w-full h-full rounded-full bg-gray-100 dark:bg-gray-800 flex items-center justify-center border-2 border-gray-200 dark:border-gray-700 overflow-hidden">
             <img
-                src={aldiPhoto}
+               src="/src/img/aldi.PNG"
                 alt="Foto Rainaldi"
                 className="object-cover w-full h-full"
             />
@@ -138,7 +139,9 @@ const Hero = () => {
         {/* Main Heading */}
         <motion.h1
           className="text-5xl md:text-7xl font-bold mb-6 text-gray-900 dark:text-white"
-          variants={itemVariants}
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, ease: "easeOut", delay: 0.2 }}
         >
           Hi, I'm{" "}
           <motion.span
@@ -149,7 +152,7 @@ const Hero = () => {
             <motion.span
               className="absolute -bottom-2 left-0 w-full h-0.5 bg-gray-900 dark:bg-white rounded-full"
               initial={{ scaleX: 0 }}
-              whileInView={{ scaleX: 1 }}
+              animate={{ scaleX: 1 }}
               transition={{ duration: 0.8, delay: 1 }}
             />
           </motion.span>
@@ -158,7 +161,9 @@ const Hero = () => {
         {/* Subtitle */}
         <motion.div
           className="text-xl md:text-2xl mb-8 h-12"
-          variants={itemVariants}
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, ease: "easeOut", delay: 0.4 }}
         >
           <motion.span
             className="text-gray-600 dark:text-gray-300"
@@ -181,7 +186,9 @@ const Hero = () => {
         {/* Description */}
         <motion.p
           className="text-lg md:text-xl text-gray-500 dark:text-gray-400 mb-12 max-w-2xl mx-auto leading-relaxed"
-          variants={itemVariants}
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, ease: "easeOut", delay: 0.6 }}
         >
           I craft <span className="text-gray-900 dark:text-white font-semibold">scalable solutions</span> and 
           {" "}<span className="text-gray-800 dark:text-gray-200 font-semibold">minimalist experiences</span> 
@@ -191,7 +198,9 @@ const Hero = () => {
         {/* CTA Buttons */}
         <motion.div
           className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-16"
-          variants={itemVariants}
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, ease: "easeOut", delay: 0.8 }}
         >
           <motion.a
             href="#contact"
@@ -218,7 +227,9 @@ const Hero = () => {
         {/* Social Links */}
         <motion.div
           className="flex justify-center space-x-6 mb-16"
-          variants={itemVariants}
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, ease: "easeOut", delay: 1.0 }}
         >
           {socialLinks.map((social, index) => (
             <motion.a

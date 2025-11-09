@@ -44,29 +44,6 @@ const Contact = () => {
     }
   ];
 
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        delayChildren: 0.3,
-        staggerChildren: 0.2
-      }
-    }
-  };
-
-  const itemVariants = {
-    hidden: { y: 20, opacity: 0 },
-    visible: {
-      y: 0,
-      opacity: 1,
-      transition: {
-        duration: 0.5,
-        ease: "easeOut"
-      }
-    }
-  };
-
   return (
     <section id="contact" className="py-24 px-4 sm:px-6 lg:px-8 bg-white dark:bg-gray-900">
       <div className="max-w-6xl mx-auto">
@@ -74,7 +51,7 @@ const Contact = () => {
           className="text-center mb-16"
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
+          transition={{ duration: 0.6, ease: "easeOut" }}
           viewport={{ once: true }}
         >
           <h2 className="text-4xl md:text-5xl font-bold mb-6 text-gray-900 dark:text-white">
@@ -88,12 +65,7 @@ const Contact = () => {
 
         <div className="grid lg:grid-cols-2 gap-12">
           {/* Contact Information */}
-          <motion.div
-            variants={containerVariants}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true }}
-          >
+          <div>
             <h3 className="text-2xl font-bold mb-8 text-gray-900 dark:text-white">
               Let's talk about your project
             </h3>
@@ -103,7 +75,10 @@ const Contact = () => {
                 <motion.a
                   key={index}
                   href={contact.href}
-                  variants={itemVariants}
+                  initial={{ opacity: 0, x: -20 }}
+                  whileInView={{ opacity: 1, x: 0 }}
+                  transition={{ duration: 0.5, ease: "easeOut", delay: index * 0.1 }}
+                  viewport={{ once: true }}
                   className="flex items-center gap-4 p-4 rounded-lg border border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600 transition-all duration-300 group bg-white dark:bg-gray-800"
                   whileHover={{ x: 10 }}
                 >
@@ -133,19 +108,23 @@ const Contact = () => {
                     className={`p-3 bg-gray-100 dark:bg-gray-800 rounded-lg text-gray-600 dark:text-gray-400 ${social.color} transition-all duration-300 border border-gray-200 dark:border-gray-700`}
                     whileHover={{ scale: 1.1, y: -2 }}
                     whileTap={{ scale: 0.9 }}
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.5, ease: "easeOut", delay: index * 0.1 }}
+                    viewport={{ once: true }}
                   >
                     <social.icon className="w-5 h-5" />
                   </motion.a>
                 ))}
               </div>
             </div>
-          </motion.div>
+          </div>
 
           {/* Contact Form */}
           <motion.div
             initial={{ opacity: 0, x: 30 }}
             whileInView={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.6 }}
+            transition={{ duration: 0.6, ease: "easeOut" }}
             viewport={{ once: true }}
             className="bg-gray-50 dark:bg-gray-800 rounded-2xl p-8 border border-gray-200 dark:border-gray-700"
           >
@@ -221,7 +200,7 @@ const Contact = () => {
           className="text-center mt-16 pt-8 border-t border-gray-200 dark:border-gray-700"
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
-          transition={{ duration: 0.6, delay: 0.4 }}
+          transition={{ duration: 0.6, ease: "easeOut", delay: 0.4 }}
           viewport={{ once: true }}
         >
           <p className="text-gray-500 dark:text-gray-400">
