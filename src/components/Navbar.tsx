@@ -208,7 +208,7 @@ const Navbar = () => {
             >
               <div className="bg-gradient-to-r from-[#2c2a28] to-[#4a4947] text-white text-xs px-4 py-3 rounded-xl shadow-2xl whitespace-nowrap border border-white/10">
                 <div className="flex items-center gap-2">
-                  <motion.div
+                  {/* <motion.div
                     animate={{ 
                       rotate: [0, 10, -10, 0],
                     }}
@@ -219,7 +219,7 @@ const Navbar = () => {
                     }}
                   >
                     👆
-                  </motion.div>
+                  </motion.div> */}
                   {/* <span className="font-medium">Navigasi Cepat</span>
                   <motion.button 
                     onClick={handleTooltipClose}
