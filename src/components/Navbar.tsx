@@ -1,183 +1,285 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import {  Menu, X, Github, Linkedin, Mail } from 'lucide-react';
 
 const Navbar = () => {
-  const [isScrolled, setIsScrolled] = useState(false);
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
- 
+  const [activeSection, setActiveSection] = useState('home');
+  const [showTooltip, setShowTooltip] = useState(false);
+  const [hasSeenTooltip, setHasSeenTooltip] = useState(false);
+  const [pulsingDot, setPulsingDot] = useState<string | null>(null);
+
+  const sections = [
+    { id: 'home', label: 'Home' },
+    { id: 'about', label: 'About' },
+    { id: 'projects', label: 'Projects' },
+    { id: 'contact', label: 'Contact' }
+  ];
+
+  useEffect(() => {
+    // Cek apakah user sudah pernah melihat tooltip
+    const seenTooltip = localStorage.getItem('hasSeenNavTooltip');
+    if (!seenTooltip) {
+      const timer = setTimeout(() => {
+        setShowTooltip(true);
+        // Mulai animasi pulsing pada dots
+        startPulsingAnimation();
+      }, 1000);
+      
+      const hideTimer = setTimeout(() => {
+        setShowTooltip(false);
+        setHasSeenTooltip(true);
+        setPulsingDot(null);
+        localStorage.setItem('hasSeenNavTooltip', 'true');
+      }, 6000);
+
+      return () => {
+        clearTimeout(timer);
+        clearTimeout(hideTimer);
+      };
+    } else {
+      setHasSeenTooltip(true);
+    }
+  }, []);
+
+  const startPulsingAnimation = () => {
+    let currentIndex = 0;
+    
+    const pulseNext = () => {
+      if (currentIndex < sections.length) {
+        setPulsingDot(sections[currentIndex].id);
+        currentIndex++;
+        setTimeout(pulseNext, 800);
+      } else {
+        // Setelah selesai, ulangi dari awal setelah jeda
+        setTimeout(() => {
+          if (showTooltip) {
+            currentIndex = 0;
+            pulseNext();
+          }
+        }, 1000);
+      }
+    };
+    
+    pulseNext();
+  };
 
   useEffect(() => {
     const handleScroll = () => {
-      setIsScrolled(window.scrollY > 20);
+      const scrollPosition = window.scrollY + 100;
+
+      sections.forEach(section => {
+        const element = document.getElementById(section.id);
+        if (element) {
+          const offsetTop = element.offsetTop;
+          const offsetBottom = offsetTop + element.offsetHeight;
+
+          if (scrollPosition >= offsetTop && scrollPosition < offsetBottom) {
+            setActiveSection(section.id);
+          }
+        }
+      });
+
+      if (showTooltip) {
+        handleTooltipClose();
+      }
     };
 
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
+  }, [showTooltip]);
 
+  const scrollToSection = (sectionId: string) => {
+    const element = document.getElementById(sectionId);
+    if (element) {
+      window.scrollTo({
+        top: element.offsetTop,
+        behavior: 'smooth'
+      });
+    }
 
+    if (showTooltip) {
+      handleTooltipClose();
+    }
+  };
 
-  const navItems = [
-    { name: 'About', href: '#about' },
-    { name: 'Skills', href: '#skills' },
-    { name: 'Projects', href: '#projects' },
-    { name: 'Experience', href: '#experience' },
-    { name: 'Contact', href: '#contact' },
-  ];
+  const handleTooltipClose = () => {
+    setShowTooltip(false);
+    setHasSeenTooltip(true);
+    setPulsingDot(null);
+    localStorage.setItem('hasSeenNavTooltip', 'true');
+  };
 
-  const socialLinks = [
-    { icon: Github, href: 'https://github.com', label: 'GitHub' },
-    { icon: Linkedin, href: 'https://linkedin.com', label: 'LinkedIn' },
-    { icon: Mail, href: 'mailto:hello@example.com', label: 'Email' },
-  ];
+  // Variants untuk animasi Framer Motion
+  const tooltipVariants = {
+    hidden: {
+      opacity: 0,
+      y: 10,
+      scale: 0.8
+    },
+    visible: {
+      opacity: 1,
+      y: 0,
+      scale: 1,
+      transition: {
+        type: "spring",
+        stiffness: 300,
+        damping: 20
+      }
+    },
+    exit: {
+      opacity: 0,
+      y: -10,
+      scale: 0.8,
+      transition: {
+        duration: 0.2
+      }
+    }
+  };
+
+  const dotVariants = {
+    normal: {
+      scale: 1,
+      backgroundColor: "#d1d5db" // gray-300
+    },
+    active: {
+      scale: 1.1,
+      backgroundColor: "#2c2a28",
+      transition: {
+        type: "spring",
+        stiffness: 400,
+        damping: 10
+      }
+    },
+    pulsing: {
+      scale: [1, 1.3, 1],
+      backgroundColor: ["#d1d5db", "#2c2a28", "#d1d5db"],
+      transition: {
+        duration: 0.8,
+        ease: "easeInOut"
+      }
+    },
+    hover: {
+      scale: 1.2,
+      backgroundColor: "#2c2a28",
+      transition: {
+        duration: 0.2
+      }
+    }
+  };
+
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.1
+      }
+    }
+  };
 
   return (
-    <motion.nav
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-        isScrolled
-          ? 'bg-white/90 dark:bg-gray-900/90 backdrop-blur-lg shadow-lg py-2'
-          : 'bg-transparent py-4'
-      }`}
-      initial={{ y: -100 }}
-      animate={{ y: 0 }}
-      transition={{ duration: 0.6 }}
-    >
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center">
-          {/* Logo */}
-          <motion.div
-            className="flex items-center space-x-2"
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-          >
-            <div className="flex items-center gap-2">
-            {/* <div className="p-2 rounded-lg flex items-center justify-center">
-                <img
-                src="/img/rainixy.png"
-                alt="Rainaldi Logo"
-                className="h-8 w-8 object-contain"
-                />
-            </div> */}
-            <span className="text-xl font-bold text-gray-900 dark:text-white transition-colors">
-                Ra1nixy
-            </span>
-            </div>
-
-          </motion.div>
-
-          {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center space-x-8">
-            <div className="flex items-center space-x-6">
-              {navItems.map((item) => (
-                <motion.a
-                  key={item.name}
-                  href={item.href}
-                  className="text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 font-medium transition-colors duration-200 relative group"
-                  whileHover={{ y: -2 }}
-                  whileTap={{ scale: 0.95 }}
-                >
-                  {item.name}
-                  <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-blue-600 group-hover:w-full transition-all duration-300" />
-                </motion.a>
-              ))}
-            </div>
-
-            {/* Social Links */}
-            <div className="flex items-center space-x-4 border-l border-gray-200 dark:border-gray-700 pl-6">
-              {socialLinks.map((social) => (
-                <motion.a
-                  key={social.label}
-                  href={social.href}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-gray-500 hover:text-blue-600 dark:text-gray-400 dark:hover:text-blue-400 transition-colors duration-200"
-                  whileHover={{ scale: 1.1, y: -2 }}
-                  whileTap={{ scale: 0.9 }}
-                >
-                  <social.icon className="h-5 w-5" />
-                </motion.a>
-              ))}
-            </div>
-
-            {/* Theme Toggle */}
-            {/* <motion.button
-              onClick={toggleTheme}
-              className="p-2 rounded-lg bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors duration-200"
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-            >
-              {theme === 'light' ? <Moon className="h-5 w-5" /> : <Sun className="h-5 w-5" />}
-            </motion.button> */}
-          </div>
-
-          {/* Mobile Menu Button */}
-          <div className="flex md:hidden items-center space-x-4">
-            {/* <motion.button
-              onClick={toggleTheme}
-              className="p-2 rounded-lg bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400"
-              whileTap={{ scale: 0.9 }}
-            >
-              {theme === 'light' ? <Moon className="h-5 w-5" /> : <Sun className="h-5 w-5" />}
-            </motion.button> */}
-
+    <>
+      {/* Desktop - Vertical di kanan */}
+      <div className="hidden lg:block fixed right-8 top-1/2 transform -translate-y-1/2 z-50">
+        <motion.div 
+          className="flex flex-col space-y-4"
+          variants={containerVariants}
+          initial="hidden"
+          animate="visible"
+        >
+          {sections.map((section) => (
             <motion.button
-              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              className="p-2 rounded-lg bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400"
-              whileTap={{ scale: 0.9 }}
-            >
-              {isMobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
-            </motion.button>
-          </div>
-        </div>
+              key={section.id}
+              onClick={() => scrollToSection(section.id)}
+              variants={dotVariants}
+              animate={activeSection === section.id ? "active" : "normal"}
+              whileHover="hover"
+              className="w-3 h-3 rounded-full"
+              title={section.label}
+            />
+          ))}
+        </motion.div>
+      </div>
 
-        {/* Mobile Menu */}
+      {/* Mobile - Horizontal di atas tengah */}
+      <div className="lg:hidden fixed top-6 left-1/2 transform -translate-x-1/2 z-50">
         <AnimatePresence>
-          {isMobileMenuOpen && (
+          {showTooltip && (
             <motion.div
-              className="md:hidden mt-4 py-4 bg-white/95 dark:bg-gray-900/95 backdrop-blur-lg rounded-lg shadow-xl border border-gray-200 dark:border-gray-700"
-              initial={{ opacity: 0, height: 0 }}
-              animate={{ opacity: 1, height: 'auto' }}
-              exit={{ opacity: 0, height: 0 }}
-              transition={{ duration: 0.3 }}
+              className="absolute top-full mt-3 left-1/2 transform -translate-x-1/2"
+              variants={tooltipVariants}
+              initial="hidden"
+              animate="visible"
+              exit="exit"
             >
-              <div className="flex flex-col space-y-4">
-                {navItems.map((item, index) => (
-                  <motion.a
-                    key={item.name}
-                    href={item.href}
-                    className="text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 font-medium px-4 py-2 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors duration-200"
-                    onClick={() => setIsMobileMenuOpen(false)}
-                    initial={{ x: -20, opacity: 0 }}
-                    animate={{ x: 0, opacity: 1 }}
-                    transition={{ delay: index * 0.1 }}
+              <div className="bg-gradient-to-r from-[#2c2a28] to-[#4a4947] text-white text-xs px-4 py-3 rounded-xl shadow-2xl whitespace-nowrap border border-white/10">
+                <div className="flex items-center gap-2">
+                  <motion.div
+                    animate={{ 
+                      rotate: [0, 10, -10, 0],
+                    }}
+                    transition={{ 
+                      duration: 2, 
+                      repeat: Infinity,
+                      repeatType: "reverse"
+                    }}
                   >
-                    {item.name}
-                  </motion.a>
-                ))}
-                
-                {/* Mobile Social Links */}
-                <div className="flex justify-center space-x-6 pt-4 border-t border-gray-200 dark:border-gray-700">
-                  {socialLinks.map((social) => (
-                    <motion.a
-                      key={social.label}
-                      href={social.href}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-gray-500 hover:text-blue-600 dark:text-gray-400 dark:hover:text-blue-400 p-2"
-                      whileHover={{ scale: 1.1 }}
-                      whileTap={{ scale: 0.9 }}
-                    >
-                      <social.icon className="h-6 w-6" />
-                    </motion.a>
-                  ))}
+                    👆
+                  </motion.div>
+                  {/* <span className="font-medium">Navigasi Cepat</span>
+                  <motion.button 
+                    onClick={handleTooltipClose}
+                    className="ml-1 w-4 h-4 flex items-center justify-center rounded-full bg-white/20 hover:bg-white/30 transition-colors"
+                    whileHover={{ scale: 1.1 }}
+                    whileTap={{ scale: 0.9 }}
+                  >
+                    <span className="text-xs font-bold">×</span>
+                  </motion.button> */}
                 </div>
+                {/* Arrow pointer ke atas */}
+                <div className="absolute -top-2 left-1/2 transform -translate-x-1/2 border-4 border-transparent border-b-[#2c2a28]"></div>
               </div>
             </motion.div>
           )}
         </AnimatePresence>
+
+        {/* Navigation Dots */}
+        <motion.div 
+          className="bg-white/80 backdrop-blur-sm rounded-full px-5 py-3 shadow-xl border border-white/20"
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.5 }}
+        >
+          <div className="flex space-x-5">
+            {sections.map((section) => (
+              <motion.button
+                key={section.id}
+                onClick={() => scrollToSection(section.id)}
+                variants={dotVariants}
+                animate={
+                  pulsingDot === section.id 
+                    ? "pulsing" 
+                    : activeSection === section.id 
+                    ? "active" 
+                    : "normal"
+                }
+                whileHover="hover"
+                className="w-3 h-3 rounded-full relative"
+                title={section.label}
+              >
+                {/* Glow effect untuk dot yang aktif/pulsing */}
+                {(activeSection === section.id || pulsingDot === section.id) && (
+                  <motion.div
+                    className="absolute inset-0 rounded-full bg-[#2c2a28] opacity-30"
+                    animate={{ scale: [1, 1.8, 1] }}
+                    transition={{ duration: 1.5, repeat: Infinity }}
+                  />
+                )}
+              </motion.button>
+            ))}
+          </div>
+        </motion.div>
       </div>
-    </motion.nav>
+    </>
   );
 };
 
