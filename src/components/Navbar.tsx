@@ -4,7 +4,6 @@ import { motion, AnimatePresence } from 'framer-motion';
 const Navbar = () => {
   const [activeSection, setActiveSection] = useState('home');
   const [showTooltip, setShowTooltip] = useState(false);
-  const [hasSeenTooltip, setHasSeenTooltip] = useState(false);
   const [pulsingDot, setPulsingDot] = useState<string | null>(null);
 
   const sections = [
@@ -26,7 +25,6 @@ const Navbar = () => {
       
       const hideTimer = setTimeout(() => {
         setShowTooltip(false);
-        setHasSeenTooltip(true);
         setPulsingDot(null);
         localStorage.setItem('hasSeenNavTooltip', 'true');
       }, 6000);
@@ -35,8 +33,6 @@ const Navbar = () => {
         clearTimeout(timer);
         clearTimeout(hideTimer);
       };
-    } else {
-      setHasSeenTooltip(true);
     }
   }, []);
 
@@ -103,12 +99,11 @@ const Navbar = () => {
 
   const handleTooltipClose = () => {
     setShowTooltip(false);
-    setHasSeenTooltip(true);
     setPulsingDot(null);
     localStorage.setItem('hasSeenNavTooltip', 'true');
   };
 
-  // Variants untuk animasi Framer Motion
+  // Variants untuk animasi Framer Motion dengan type yang benar
   const tooltipVariants = {
     hidden: {
       opacity: 0,
@@ -120,7 +115,7 @@ const Navbar = () => {
       y: 0,
       scale: 1,
       transition: {
-        type: "spring",
+        type: "spring" as const,
         stiffness: 300,
         damping: 20
       }
@@ -138,13 +133,13 @@ const Navbar = () => {
   const dotVariants = {
     normal: {
       scale: 1,
-      backgroundColor: "#d1d5db" // gray-300
+      backgroundColor: "#d1d5db"
     },
     active: {
       scale: 1.1,
       backgroundColor: "#2c2a28",
       transition: {
-        type: "spring",
+        type: "spring" as const,
         stiffness: 400,
         damping: 10
       }
@@ -154,7 +149,7 @@ const Navbar = () => {
       backgroundColor: ["#d1d5db", "#2c2a28", "#d1d5db"],
       transition: {
         duration: 0.8,
-        ease: "easeInOut"
+        ease: "easeInOut" as const
       }
     },
     hover: {
@@ -220,7 +215,7 @@ const Navbar = () => {
                     transition={{ 
                       duration: 2, 
                       repeat: Infinity,
-                      repeatType: "reverse"
+                      repeatType: "reverse" as const
                     }}
                   >
                     👆
