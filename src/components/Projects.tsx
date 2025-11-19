@@ -1,12 +1,32 @@
 const Projects = () => {
   const technicalSkills = {
     programming: [
-      { name: 'PHP & Laravel', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/php/php-original.svg' },
-      { name: 'JavaScript', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/javascript/javascript-original.svg' },
-      { name: 'MySQL', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/mysql/mysql-original.svg' },
-      { name: 'HTML', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/html5/html5-original.svg' },
-      { name: 'CSS', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/css3/css3-original.svg' }
+      {
+        name: 'PHP & Laravel',
+        icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/php/php-original.svg'
+      },
+      {
+        name: 'JavaScript',
+        icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/javascript/javascript-original.svg'
+      },
+      {
+        name: 'React.js',
+        icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/react/react-original.svg'
+      },
+      {
+        name: 'MySQL',
+        icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/mysql/mysql-original.svg'
+      },
+      {
+        name: 'HTML',
+        icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/html5/html5-original.svg'
+      },
+      {
+        name: 'CSS',
+        icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/css3/css3-original.svg'
+      }
     ],
+
     tools: [
       { name: 'VS Code', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/vscode/vscode-original.svg' },
       { name: 'Git', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/git/git-original.svg' },
@@ -17,7 +37,7 @@ const Projects = () => {
 
   const softSkills = [
     'Problem Solving',
-    'Self-Learning', 
+    'Self-Learning',
     'Teamwork',
     'Komunikasi'
   ];
@@ -43,8 +63,8 @@ const Projects = () => {
                     key={index}
                     className="flex items-center gap-2 bg-gray-50 px-3 py-2 rounded-md"
                   >
-                    <img 
-                      src={skill.icon} 
+                    <img
+                      src={skill.icon}
                       alt={skill.name}
                       className="w-4 h-4 object-contain"
                     />
@@ -67,8 +87,8 @@ const Projects = () => {
                     key={index}
                     className="flex items-center gap-2 bg-gray-50 px-3 py-2 rounded-md"
                   >
-                    <img 
-                      src={skill.icon} 
+                    <img
+                      src={skill.icon}
                       alt={skill.name}
                       className="w-4 h-4 object-contain"
                     />
