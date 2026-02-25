@@ -1,7 +1,9 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useLocation } from 'react-router-dom'; // Import useLocation
 
 const Navbar = () => {
+  const location = useLocation(); // Dapatkan informasi route
   const [activeSection, setActiveSection] = useState('home');
   const [showTooltip, setShowTooltip] = useState(false);
   const [pulsingDot, setPulsingDot] = useState<string | null>(null);
@@ -12,6 +14,11 @@ const Navbar = () => {
     { id: 'projects', label: 'Projects' },
     { id: 'contact', label: 'Contact' }
   ];
+
+  // Jika di halaman portfolio, jangan render apapun
+  if (location.pathname === '/portfolio') {
+    return null;
+  }
 
   useEffect(() => {
     // Cek apakah user sudah pernah melihat tooltip
