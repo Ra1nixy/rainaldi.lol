@@ -22,3 +22,5 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+src/config/firebase.ts
+src/config/firebase.example.ts
