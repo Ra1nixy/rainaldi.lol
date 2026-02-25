@@ -347,25 +347,20 @@ const AdminPortfolio = () => {
       <div className="sticky top-0 z-20 bg-white border-b border-gray-200 px-4 py-3 shadow-sm">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <h1 className="text-xl font-semibold text-[#2c2a28]">Admin Portfolio</h1>
+            <h1 className="text-xl font-semibold text-[#2c2a28]">
+              Admin Portfolio
+            </h1>
             {!initialLoading && (
               <span className="bg-[#2c2a28] text-white text-xs px-2 py-1 rounded-full">
                 {filteredItems.length}
               </span>
             )}
           </div>
-          <button
-            onClick={openAddModal}
-            className="bg-[#2c2a28] text-white p-3 rounded-full shadow-lg hover:bg-opacity-90 transition-all active:scale-95 min-h-[44px] min-w-[44px] flex items-center justify-center"
-            aria-label="Tambah Portfolio"
-          >
-            <Plus size={20} />
-          </button>
         </div>
       </div>
 
       {/* Search and Filter Bar */}
-      <div className="sticky top-[57px] z-10 bg-white/80 backdrop-blur-sm border-b border-gray-200 px-4 py-3">
+      <div className="sticky top-[50px] z-10 bg-white/80 backdrop-blur-sm border-b border-gray-200 px-4 py-3">
         <div className="flex gap-2">
           <div className="flex-1 relative">
             <Search size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
