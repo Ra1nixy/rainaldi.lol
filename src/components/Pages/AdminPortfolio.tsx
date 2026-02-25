@@ -28,13 +28,25 @@ import {
   Loader2
 } from 'lucide-react';
 
-// Modal Component
+// Modal Component dengan optimasi mobile
 const Modal = ({ isOpen, onClose, title, children }: { 
   isOpen: boolean; 
   onClose: () => void; 
   title: string; 
   children: React.ReactNode 
 }) => {
+  // Prevent body scroll when modal is open
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'unset';
+    }
+    return () => {
+      document.body.style.overflow = 'unset';
+    };
+  }, [isOpen]);
+
   if (!isOpen) return null;
 
   return (
@@ -45,13 +57,14 @@ const Modal = ({ isOpen, onClose, title, children }: {
         onClick={onClose}
       />
       
-      {/* Modal Content */}
+      {/* Modal Content - Optimasi untuk mobile */}
       <div className="relative bg-white w-full md:w-[600px] md:max-w-[90vw] rounded-t-2xl md:rounded-2xl max-h-[90vh] overflow-y-auto animate-slideUp md:animate-fadeIn">
         <div className="sticky top-0 bg-white border-b border-gray-200 px-5 py-4 flex items-center justify-between z-10">
           <h2 className="text-lg font-semibold text-[#2c2a28]">{title}</h2>
           <button
             onClick={onClose}
-            className="p-2 hover:bg-gray-100 rounded-full transition-colors"
+            className="p-2 hover:bg-gray-100 rounded-full transition-colors min-h-[44px] min-w-[44px] flex items-center justify-center"
+            aria-label="Tutup"
           >
             <X size={20} />
           </button>
@@ -65,7 +78,7 @@ const Modal = ({ isOpen, onClose, title, children }: {
   );
 };
 
-// Alert Component
+// Alert Component dengan optimasi mobile
 const Alert = ({ message, type = 'success', onClose }: { 
   message: string; 
   type?: 'success' | 'error'; 
@@ -80,7 +93,7 @@ const Alert = ({ message, type = 'success', onClose }: {
   }, [onClose]);
 
   return (
-    <div className={`fixed top-20 left-4 right-4 md:left-auto md:right-4 md:w-96 z-50 animate-slideDown`}>
+    <div className="fixed top-20 left-4 right-4 md:left-auto md:right-4 md:w-96 z-50 animate-slideDown">
       <div className={`rounded-xl shadow-lg p-4 flex items-start gap-3 ${
         type === 'success' ? 'bg-green-50 border border-green-200' : 'bg-red-50 border border-red-200'
       }`}>
@@ -94,7 +107,11 @@ const Alert = ({ message, type = 'success', onClose }: {
         }`}>
           {message}
         </p>
-        <button onClick={onClose} className="p-1 hover:bg-black/5 rounded-full">
+        <button 
+          onClick={onClose} 
+          className="p-2 hover:bg-black/5 rounded-full min-h-[44px] min-w-[44px] flex items-center justify-center"
+          aria-label="Tutup"
+        >
           <X size={16} className={type === 'success' ? 'text-green-800' : 'text-red-800'} />
         </button>
       </div>
@@ -115,7 +132,6 @@ const SkeletonCard = () => (
 
 const AdminPortfolio = () => {
   const [portfolioItems, setPortfolioItems] = useState<PortfolioItem[]>([]);
-  const [loading, setLoading] = useState(false);
   const [initialLoading, setInitialLoading] = useState(true);
   const [editingItem, setEditingItem] = useState<PortfolioItem | null>(null);
   const [showModal, setShowModal] = useState(false);
@@ -340,7 +356,8 @@ const AdminPortfolio = () => {
           </div>
           <button
             onClick={openAddModal}
-            className="bg-[#2c2a28] text-white p-3 rounded-full shadow-lg hover:bg-opacity-90 transition-all active:scale-95"
+            className="bg-[#2c2a28] text-white p-3 rounded-full shadow-lg hover:bg-opacity-90 transition-all active:scale-95 min-h-[44px] min-w-[44px] flex items-center justify-center"
+            aria-label="Tambah Portfolio"
           >
             <Plus size={20} />
           </button>
@@ -357,23 +374,26 @@ const AdminPortfolio = () => {
               placeholder="Cari portfolio..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full pl-10 pr-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#2c2a28] focus:border-transparent"
+              className="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-xl text-base focus:outline-none focus:ring-2 focus:ring-[#2c2a28] focus:border-transparent"
+              style={{ fontSize: '16px' }} // Mencegah auto-zoom di iPhone
             />
           </div>
           <div className="flex gap-1">
             <button
               onClick={() => setViewMode('grid')}
-              className={`p-2.5 rounded-xl transition-colors ${
+              className={`p-3 rounded-xl transition-colors min-h-[44px] min-w-[44px] flex items-center justify-center ${
                 viewMode === 'grid' ? 'bg-[#2c2a28] text-white' : 'bg-gray-100 text-gray-600'
               }`}
+              aria-label="Tampilan Grid"
             >
               <Grid3x3 size={18} />
             </button>
             <button
               onClick={() => setViewMode('list')}
-              className={`p-2.5 rounded-xl transition-colors ${
+              className={`p-3 rounded-xl transition-colors min-h-[44px] min-w-[44px] flex items-center justify-center ${
                 viewMode === 'list' ? 'bg-[#2c2a28] text-white' : 'bg-gray-100 text-gray-600'
               }`}
+              aria-label="Tampilan List"
             >
               <List size={18} />
             </button>
@@ -386,7 +406,7 @@ const AdminPortfolio = () => {
             <button
               key={cat}
               onClick={() => setSelectedCategory(cat)}
-              className={`px-4 py-2 text-sm whitespace-nowrap rounded-full transition-all ${
+              className={`px-4 py-2 text-sm whitespace-nowrap rounded-full transition-all min-h-[44px] ${
                 selectedCategory === cat
                   ? 'bg-[#2c2a28] text-white'
                   : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
@@ -419,7 +439,7 @@ const AdminPortfolio = () => {
             <p className="text-sm text-gray-500 mb-4">Tambahkan portfolio pertama Anda</p>
             <button
               onClick={openAddModal}
-              className="inline-flex items-center gap-2 px-6 py-3 bg-[#2c2a28] text-white rounded-xl hover:bg-opacity-90 transition-colors active:scale-95"
+              className="inline-flex items-center gap-2 px-6 py-3 bg-[#2c2a28] text-white rounded-xl hover:bg-opacity-90 transition-colors active:scale-95 min-h-[44px]"
             >
               <Plus size={18} />
               Tambah Portfolio
@@ -444,14 +464,16 @@ const AdminPortfolio = () => {
                   <div className="absolute top-2 right-2 flex gap-1">
                     <button
                       onClick={() => handleEdit(item)}
-                      className="p-2 bg-white/90 backdrop-blur-sm rounded-lg shadow-md hover:bg-white transition-colors"
+                      className="p-2 bg-white/90 backdrop-blur-sm rounded-lg shadow-md hover:bg-white transition-colors min-h-[36px] min-w-[36px] flex items-center justify-center"
+                      aria-label="Edit"
                     >
                       <Edit2 size={14} className="text-blue-600" />
                     </button>
                     <button
                       onClick={() => item.id && handleDelete(item.id)}
                       disabled={deleteLoading === item.id}
-                      className="p-2 bg-white/90 backdrop-blur-sm rounded-lg shadow-md hover:bg-white transition-colors disabled:opacity-50"
+                      className="p-2 bg-white/90 backdrop-blur-sm rounded-lg shadow-md hover:bg-white transition-colors disabled:opacity-50 min-h-[36px] min-w-[36px] flex items-center justify-center"
+                      aria-label="Hapus"
                     >
                       {deleteLoading === item.id ? (
                         <Loader2 size={14} className="animate-spin text-red-600" />
@@ -517,14 +539,16 @@ const AdminPortfolio = () => {
                       <div className="flex gap-1">
                         <button
                           onClick={() => handleEdit(item)}
-                          className="p-2 hover:bg-blue-50 rounded-lg transition-colors"
+                          className="p-2 hover:bg-blue-50 rounded-lg transition-colors min-h-[36px] min-w-[36px] flex items-center justify-center"
+                          aria-label="Edit"
                         >
                           <Edit2 size={16} className="text-blue-600" />
                         </button>
                         <button
                           onClick={() => item.id && handleDelete(item.id)}
                           disabled={deleteLoading === item.id}
-                          className="p-2 hover:bg-red-50 rounded-lg transition-colors disabled:opacity-50"
+                          className="p-2 hover:bg-red-50 rounded-lg transition-colors disabled:opacity-50 min-h-[36px] min-w-[36px] flex items-center justify-center"
+                          aria-label="Hapus"
                         >
                           {deleteLoading === item.id ? (
                             <Loader2 size={16} className="animate-spin text-red-600" />
@@ -569,8 +593,9 @@ const AdminPortfolio = () => {
               name="title"
               value={formData.title || ''}
               onChange={handleInputChange}
-              className="w-full px-4 py-3 border border-gray-300 rounded-xl text-sm focus:ring-2 focus:ring-[#2c2a28] focus:border-transparent"
+              className="w-full px-4 py-3 border border-gray-300 rounded-xl text-base focus:ring-2 focus:ring-[#2c2a28] focus:border-transparent"
               placeholder="Contoh: Aplikasi E-commerce"
+              style={{ fontSize: '16px' }} // Mencegah auto-zoom di iPhone
               required
             />
           </div>
@@ -584,7 +609,8 @@ const AdminPortfolio = () => {
               name="category"
               value={formData.category || ''}
               onChange={handleInputChange}
-              className="w-full px-4 py-3 border border-gray-300 rounded-xl text-sm focus:ring-2 focus:ring-[#2c2a28] focus:border-transparent"
+              className="w-full px-4 py-3 border border-gray-300 rounded-xl text-base focus:ring-2 focus:ring-[#2c2a28] focus:border-transparent"
+              style={{ fontSize: '16px' }} // Mencegah auto-zoom di iPhone
               required
             >
               <option value="">Pilih Kategori</option>
@@ -601,12 +627,12 @@ const AdminPortfolio = () => {
             </label>
             <div
               {...getRootProps()}
-              className={`border-2 border-dashed rounded-xl p-6 text-center cursor-pointer transition-colors
+              className={`border-2 border-dashed rounded-xl p-6 text-center cursor-pointer transition-colors min-h-[120px] flex items-center justify-center
                 ${isDragActive ? 'border-[#2c2a28] bg-gray-50' : 'border-gray-300 hover:border-[#2c2a28]'}`}
             >
               <input {...getInputProps()} />
               {imagePreview ? (
-                <div className="relative">
+                <div className="relative w-full">
                   <img 
                     src={imagePreview} 
                     alt="Preview" 
@@ -620,7 +646,8 @@ const AdminPortfolio = () => {
                       setImagePreview('');
                       setFormData(prev => ({ ...prev, image: '' }));
                     }}
-                    className="absolute top-2 right-2 bg-red-500 text-white p-1.5 rounded-full hover:bg-red-600"
+                    className="absolute top-2 right-2 bg-red-500 text-white p-2 rounded-full hover:bg-red-600 min-h-[36px] min-w-[36px] flex items-center justify-center"
+                    aria-label="Hapus gambar"
                   >
                     <X size={16} />
                   </button>
@@ -650,13 +677,15 @@ const AdminPortfolio = () => {
                 value={techInput}
                 onChange={(e) => setTechInput(e.target.value)}
                 onKeyPress={(e) => e.key === 'Enter' && (e.preventDefault(), handleAddTechnology())}
-                className="flex-1 px-4 py-3 border border-gray-300 rounded-xl text-sm focus:ring-2 focus:ring-[#2c2a28] focus:border-transparent"
+                className="flex-1 px-4 py-3 border border-gray-300 rounded-xl text-base focus:ring-2 focus:ring-[#2c2a28] focus:border-transparent"
                 placeholder="Contoh: React.js"
+                style={{ fontSize: '16px' }} // Mencegah auto-zoom di iPhone
               />
               <button
                 type="button"
                 onClick={handleAddTechnology}
-                className="px-5 py-3 bg-[#2c2a28] text-white rounded-xl hover:bg-opacity-90 transition-colors active:scale-95"
+                className="px-5 py-3 bg-[#2c2a28] text-white rounded-xl hover:bg-opacity-90 transition-colors active:scale-95 min-h-[44px] min-w-[44px] flex items-center justify-center"
+                aria-label="Tambah teknologi"
               >
                 <Plus size={18} />
               </button>
@@ -671,7 +700,8 @@ const AdminPortfolio = () => {
                   <button
                     type="button"
                     onClick={() => handleRemoveTechnology(index)}
-                    className="text-gray-500 hover:text-red-500"
+                    className="text-gray-500 hover:text-red-500 p-1 min-h-[28px] min-w-[28px] flex items-center justify-center"
+                    aria-label={`Hapus ${tech}`}
                   >
                     <X size={14} />
                   </button>
@@ -690,8 +720,9 @@ const AdminPortfolio = () => {
               value={formData.description || ''}
               onChange={handleInputChange}
               rows={4}
-              className="w-full px-4 py-3 border border-gray-300 rounded-xl text-sm focus:ring-2 focus:ring-[#2c2a28] focus:border-transparent"
+              className="w-full px-4 py-3 border border-gray-300 rounded-xl text-base focus:ring-2 focus:ring-[#2c2a28] focus:border-transparent"
               placeholder="Jelaskan tentang project ini..."
+              style={{ fontSize: '16px' }} // Mencegah auto-zoom di iPhone
               required
             />
           </div>
@@ -707,8 +738,9 @@ const AdminPortfolio = () => {
                 name="demoLink"
                 value={formData.demoLink || ''}
                 onChange={handleInputChange}
-                className="w-full px-4 py-3 border border-gray-300 rounded-xl text-sm focus:ring-2 focus:ring-[#2c2a28] focus:border-transparent"
+                className="w-full px-4 py-3 border border-gray-300 rounded-xl text-base focus:ring-2 focus:ring-[#2c2a28] focus:border-transparent"
                 placeholder="https://..."
+                style={{ fontSize: '16px' }} // Mencegah auto-zoom di iPhone
               />
             </div>
             <div>
@@ -720,8 +752,9 @@ const AdminPortfolio = () => {
                 name="githubLink"
                 value={formData.githubLink || ''}
                 onChange={handleInputChange}
-                className="w-full px-4 py-3 border border-gray-300 rounded-xl text-sm focus:ring-2 focus:ring-[#2c2a28] focus:border-transparent"
+                className="w-full px-4 py-3 border border-gray-300 rounded-xl text-base focus:ring-2 focus:ring-[#2c2a28] focus:border-transparent"
                 placeholder="https://..."
+                style={{ fontSize: '16px' }} // Mencegah auto-zoom di iPhone
               />
             </div>
           </div>
@@ -731,7 +764,7 @@ const AdminPortfolio = () => {
             <button
               type="submit"
               disabled={uploading}
-              className="flex-1 py-3.5 bg-[#2c2a28] text-white rounded-xl hover:bg-opacity-90 transition-colors disabled:opacity-50 font-medium active:scale-95 flex items-center justify-center gap-2"
+              className="flex-1 py-3.5 bg-[#2c2a28] text-white rounded-xl hover:bg-opacity-90 transition-colors disabled:opacity-50 font-medium active:scale-95 flex items-center justify-center gap-2 min-h-[48px]"
             >
               {uploading ? (
                 <>
@@ -745,7 +778,7 @@ const AdminPortfolio = () => {
             <button
               type="button"
               onClick={() => setShowModal(false)}
-              className="flex-1 py-3.5 border border-gray-300 rounded-xl hover:bg-gray-50 transition-colors active:scale-95"
+              className="flex-1 py-3.5 border border-gray-300 rounded-xl hover:bg-gray-50 transition-colors active:scale-95 min-h-[48px]"
             >
               Batal
             </button>
@@ -757,7 +790,8 @@ const AdminPortfolio = () => {
       {!showModal && (
         <button
           onClick={openAddModal}
-          className="fixed bottom-6 right-6 md:hidden bg-[#2c2a28] text-white p-4 rounded-full shadow-xl hover:bg-opacity-90 transition-all active:scale-95 z-10"
+          className="fixed bottom-6 right-6 md:hidden bg-[#2c2a28] text-white p-4 rounded-full shadow-xl hover:bg-opacity-90 transition-all active:scale-95 z-10 min-h-[56px] min-w-[56px] flex items-center justify-center"
+          aria-label="Tambah Portfolio"
         >
           <Plus size={24} />
         </button>
