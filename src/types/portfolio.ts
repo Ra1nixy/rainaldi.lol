@@ -2,7 +2,8 @@ export interface PortfolioItem {
   id?: string;
   title: string;
   category: string;
-  image: string; // base64 string
+  image: string; // base64 string (first/cover image, backward compat)
+  images?: string[]; // array of base64 strings for multi-image support
   technologies: string[];
   description: string;
   demoLink: string;
