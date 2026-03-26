@@ -1,9 +1,9 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { useLocation } from 'react-router-dom'; // Import useLocation
+// import { useLocation } from 'react-router-dom'; // Import useLocation
 
 const Navbar = () => {
-  const location = useLocation(); // Dapatkan informasi route
+  // const location = useLocation(); // Dapatkan informasi route
   const [activeSection, setActiveSection] = useState('home');
   const [showTooltip, setShowTooltip] = useState(false);
   const [pulsingDot, setPulsingDot] = useState<string | null>(null);
