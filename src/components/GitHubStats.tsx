@@ -10,27 +10,6 @@ import { Github, Star, BookOpen, Users, UserCheck } from "lucide-react";
 
 const GITHUB_USERNAME = "Ra1nixy";
 
-// Warna khas per bahasa pemrograman
-const LANGUAGE_COLORS: Record<string, string> = {
-  TypeScript: "#3178c6",
-  JavaScript: "#f7df1e",
-  PHP: "#8892be",
-  HTML: "#e34f26",
-  CSS: "#1572b6",
-  Python: "#3572A5",
-  Dart: "#00B4AB",
-  Java: "#b07219",
-  "C#": "#178600",
-  Go: "#00ADD8",
-  Rust: "#dea584",
-  Swift: "#f05138",
-  Kotlin: "#7F52FF",
-  Vue: "#41b883",
-  Shell: "#89e051",
-  SCSS: "#c6538c",
-  Other: "#9ca3af",
-};
-
 interface GitHubUser {
   login: string;
   name: string;
@@ -157,7 +136,7 @@ const GitHubStats = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        // Panggil endpoint internal yang baru (aman)
+        // Panggil endpoint internal yang baru (aman & sudah disanitasi)
         const response = await fetch("/api/github-stats");
         
         if (!response.ok) {
@@ -166,40 +145,20 @@ const GitHubStats = () => {
         }
 
         const data = await response.json();
-        const { user: userData, repos: reposData, contributions: contData } = data;
-
-        // Hitung total repos & stars
-        const repoCount = reposData.length;
-        const stars = reposData
-          .filter((r: any) => !r.fork)
-          .reduce((acc: number, r: any) => acc + r.stargazers_count, 0);
-
-        // Agregasi bahasa pemrograman
-        const langCount: Record<string, number> = {};
-        reposData.forEach((repo: any) => {
-          if (repo.language) {
-            langCount[repo.language] = (langCount[repo.language] || 0) + 1;
-          }
-        });
-
-        const sorted = Object.entries(langCount).sort((a, b) => b[1] - a[1]);
-        const top = sorted.slice(0, 8);
-        const otherCount = sorted.slice(8).reduce((acc, [, v]) => acc + v, 0);
-
-        const chartData: LangData[] = top.map(([name, value]) => ({
-          name,
-          value,
-          color: LANGUAGE_COLORS[name] ?? LANGUAGE_COLORS.Other,
-        }));
-
-        if (otherCount > 0) {
-          chartData.push({ name: "Other", value: otherCount, color: LANGUAGE_COLORS.Other });
-        }
+        
+        // Data sudah "matang" dari server (Maximum Security)
+        const { 
+          user: userData, 
+          totalStars: stars, 
+          totalRepos: repoCount, 
+          langData: languages, 
+          contributions: contData 
+        } = data;
 
         setUser(userData);
         setTotalRepos(repoCount);
         setTotalStars(stars);
-        setLangData(chartData);
+        setLangData(languages);
         setContributions(contData);
       } catch (err: any) {
         console.error("GitHub fetch error:", err);
