@@ -2,6 +2,7 @@ import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-route
 import Navbar from "./components/Navbar";
 import Hero from "./components/Hero";
 import About from "./components/About";
+import GitHubStats from "./components/GitHubStats";
 import Projects from "./components/Projects";
 import Contact from "./components/Contact";
 import Portfolio from "./components/Pages/Portfolio";
@@ -22,6 +23,7 @@ const AppContent = () => {
           <>
             <Hero />
             <About />
+            <GitHubStats />
             <Projects />
             <Contact />
           </>
