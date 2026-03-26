@@ -15,10 +15,8 @@ const Navbar = () => {
     { id: 'contact', label: 'Contact' }
   ];
 
-  // Jika di halaman portfolio, jangan render apapun
-  if (location.pathname === '/portfolio') {
-    return null;
-  }
+  // Navbar disembunyikan sementara (Hide)
+  return null;
 
   useEffect(() => {
     // Cek apakah user sudah pernah melihat tooltip
