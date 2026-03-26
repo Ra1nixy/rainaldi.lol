@@ -42,12 +42,6 @@ interface GitHubUser {
   html_url: string;
 }
 
-interface GitHubRepo {
-  language: string | null;
-  stargazers_count: number;
-  fork: boolean;
-}
-
 interface LangData {
   name: string;
   value: number;
