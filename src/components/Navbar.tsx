@@ -203,7 +203,10 @@ const Navbar = () => {
       </div>
 
       {/* Mobile - Horizontal di atas tengah */}
-      <div className="lg:hidden fixed top-6 left-1/2 transform -translate-x-1/2 z-50">
+      <div 
+        className="lg:hidden fixed left-1/2 transform -translate-x-1/2 z-50"
+        style={{ top: 'calc(env(safe-area-inset-top, 0px) + 12px)' }}
+      >
         <AnimatePresence>
           {showTooltip && (
             <motion.div
