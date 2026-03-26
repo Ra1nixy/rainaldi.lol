@@ -9,7 +9,7 @@ const Navbar = () => {
   const [pulsingDot, setPulsingDot] = useState<string | null>(null);
 
   const sections = [
-    { id: 'home', label: 'Home' },
+    { id: 'homes', label: 'Home' },
     { id: 'about', label: 'About' },
     { id: 'projects', label: 'Projects' },
     { id: 'contact', label: 'Contact' }
