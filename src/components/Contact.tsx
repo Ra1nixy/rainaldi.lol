@@ -1,4 +1,13 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { db } from '../config/firebase';
+import { collection, getDocs, query, orderBy } from 'firebase/firestore';
+interface Experience {
+  title: string;
+  company: string;
+  period: string;
+  responsibilities: string[];
+  order: number;
+}
 
 const Contact = () => {
   const [formData, setFormData] = useState({
@@ -7,45 +16,40 @@ const Contact = () => {
     message: ''
   });
 
-  const experiences = [
-    {
-      title: 'IT Internship',
-      period: 'September 2025 - Sekarang',
-      company: 'Universitas Putra Bangsa',
-      responsibilities: [
-        'Membangun sistem manajemen SDM dan presensi yang terintegrasi menggunakan REST API Laravel dan React JS',
-      ]
-    },
-    {
-      title: 'IT Support Intern',
-      period: 'Sep 2024 - Jan 2025',
-      company: 'Pengadilan Negeri Kebumen',
-      responsibilities: [
-        'Mengembangkan sistem presensi digital untuk peserta magang',
-        'Memberikan dukungan teknis dan pemeliharaan sistem IT'
-      ]
-    },
-    {
-      title: 'Junior Software Developer',
-      period: 'Jun 2024 - Dec 2024',
-      company: 'LP3M Universitas Putra Bangsa',
-      responsibilities: [
-        'Berkontribusi dalam pengembangan sistem untuk program PKM',
-        'Mengelola dokumentasi dan publikasi kegiatan',
-        'Mengimplementasikan fitur untuk pemberdayaan masyarakat'
-      ]
-    },
-    {
-      title: 'Web Developer (KKL)',
-      period: 'Agustus 2024',
-      company: 'Caraka Wedding',
-      responsibilities: [
-        'Membangun landing page untuk promosi dan pembukuan',
-        'Meningkatkan profesionalisme bisnis klien',
-        'Menyederhanakan proses administrasi'
-      ]
-    }
-  ];
+  const [experiences, setExperiences] = useState<Experience[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  // Fetch experiences sorted by 'order'
+  useEffect(() => {
+    const fetchExperiences = async () => {
+      try {
+        const q = query(collection(db, 'experiences'), orderBy('order', 'asc'));
+        const querySnapshot = await getDocs(q);
+        const data = querySnapshot.docs.map(doc => doc.data()) as Experience[];
+        
+        if (data.length > 0) {
+          setExperiences(data);
+        } else {
+          // Fallback static
+          setExperiences([
+            {
+              title: 'IT Internship',
+              period: 'September 2025 - Sekarang',
+              company: 'Universitas Putra Bangsa',
+              responsibilities: ['Membangun sistem manajemen SDM dan presensi yang terintegrasi menggunakan REST API Laravel dan React JS'],
+              order: 1
+            }
+          ]);
+        }
+      } catch (error) {
+        console.error("Error fetching experiences:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchExperiences();
+  }, []);
 
   const education = {
     degree: 'S1 Ilmu Komputer',
@@ -64,7 +68,6 @@ const Contact = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    console.log('Form submitted:', formData);
     alert('Thank you for your message! I will get back to you soon.');
     setFormData({ name: '', email: '', message: '' });
   };
@@ -85,47 +88,69 @@ const Contact = () => {
             {/* Timeline Line */}
             <div className="absolute left-4 md:left-1/2 top-0 bottom-0 w-0.5 bg-gray-300 transform md:-translate-x-1/2"></div>
             
-            {experiences.map((exp, index) => (
-              <div key={index} className={`relative flex items-start mb-12 ${
-                index % 2 === 0 ? 'md:justify-start' : 'md:justify-end'
-              }`}>
-                {/* Timeline Dot */}
-                <div className={`absolute left-4 md:left-1/2 w-3 h-3 rounded-full transform md:-translate-x-1/2 z-10 ${
-                  index === 0 ? 'bg-green-500 animate-pulse' : 'bg-[#2c2a28]'
-                }`}></div>
-                
-                {/* Content - Selang-seling kiri-kanan */}
-                <div className={`ml-12 md:ml-0 md:w-5/12 ${
-                  index % 2 === 0 ? 'md:pr-8' : 'md:pl-8'
-                }`}>
-                  <div className={`bg-white rounded-xl p-6 shadow-sm border ${
-                    index === 0 ? 'border-green-200' : 'border-gray-200'
-                  } hover:shadow-md transition-shadow duration-300`}>
-                    <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-3">
-                      <h3 className="text-lg font-medium text-[#2c2a28]">{exp.title}</h3>
-                      <span className={`text-sm px-3 py-1 rounded-full mt-1 sm:mt-0 ${
-                        index === 0 
-                          ? 'text-green-700 bg-green-100' 
-                          : 'text-gray-500 bg-gray-100'
-                      }`}>
-                        {exp.period}
-                      </span>
-                    </div>
-                    <p className="text-gray-700 font-medium mb-4">{exp.company}</p>
-                    <ul className="space-y-2">
-                      {exp.responsibilities.map((resp, respIndex) => (
-                        <li key={respIndex} className="flex items-start">
-                          <div className={`w-1.5 h-1.5 rounded-full mt-2 mr-3 flex-shrink-0 ${
-                            index === 0 ? 'bg-green-500' : 'bg-[#2c2a28]'
-                          }`}></div>
-                          <span className="text-gray-600 text-sm leading-relaxed">{resp}</span>
-                        </li>
-                      ))}
-                    </ul>
+            {loading ? (
+              // Loading Skeleton
+              <div className="space-y-12">
+                {[1, 2].map((i) => (
+                  <div key={i} className={`relative flex items-start ${i % 2 === 0 ? 'md:justify-start' : 'md:justify-end'}`}>
+                    <div className="md:w-5/12 bg-gray-100 h-32 rounded-xl animate-pulse ml-12 md:ml-0"></div>
                   </div>
-                </div>
+                ))}
               </div>
-            ))}
+            ) : (
+              experiences.map((exp, index) => {
+                const isCurrent = exp.period.toLowerCase().includes('sekarang');
+                return (
+                  <div key={index} className={`relative flex items-start mb-12 ${
+                    index % 2 === 0 ? 'md:justify-start' : 'md:justify-end'
+                  }`}>
+                    {/* Timeline Dot */}
+                    <div className={`absolute left-4 md:left-1/2 w-3 h-3 rounded-full transform md:-translate-x-1/2 z-10 ${
+                      isCurrent ? 'bg-green-500 animate-pulse outline-4 outline-green-100' : 'bg-[#2c2a28]'
+                    }`}></div>
+                    
+                    {/* Content - Selang-seling kiri-kanan */}
+                    <div className={`ml-12 md:ml-0 md:w-5/12 ${
+                      index % 2 === 0 ? 'md:pr-8' : 'md:pl-8'
+                    }`}>
+                      <div className={`bg-white rounded-xl p-6 shadow-sm border ${
+                        isCurrent ? 'border-green-200 ring-4 ring-green-50/50' : 'border-gray-200'
+                      } hover:shadow-md transition-all duration-300 relative group`}>
+                        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-3 gap-2">
+                          <h3 className="text-lg font-medium text-[#2c2a28] flex items-center gap-2">
+                            {exp.title}
+                            {isCurrent && (
+                              <span className="flex h-2 w-2 relative">
+                                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+                                <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
+                              </span>
+                            )}
+                          </h3>
+                          <span className={`text-xs font-medium px-3 py-1 rounded-full w-fit ${
+                            isCurrent 
+                              ? 'text-green-700 bg-green-100 uppercase tracking-wider' 
+                              : 'text-gray-500 bg-gray-100'
+                          }`}>
+                            {exp.period}
+                          </span>
+                        </div>
+                        <p className="text-gray-700 font-medium mb-4">{exp.company}</p>
+                        <ul className="space-y-2">
+                          {exp.responsibilities.map((resp, respIndex) => (
+                            <li key={respIndex} className="flex items-start">
+                              <div className={`w-1.5 h-1.5 rounded-full mt-2 mr-3 flex-shrink-0 ${
+                                isCurrent ? 'bg-green-500' : 'bg-[#2c2a28]'
+                              }`}></div>
+                              <span className="text-gray-600 text-sm leading-relaxed">{resp}</span>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })
+            )}
           </div>
         </div>
 
