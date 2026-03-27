@@ -16,6 +16,14 @@ export default defineConfig({
   server: {
     hmr: {
       overlay: true
+    },
+    // Proxy for Vercel Functions in local dev
+    proxy: {
+      '/api': {
+        target: 'http://localhost:3000',
+        changeOrigin: true,
+        secure: false,
+      }
     }
   }
 })

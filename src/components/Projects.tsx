@@ -1,36 +1,67 @@
-const Projects = () => {
-  const technicalSkills = {
-    programming: [
-      {
-        name: 'PHP & Laravel',
-        icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/php/php-original.svg'
-      },
-      {
-        name: 'JavaScript',
-        icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/javascript/javascript-original.svg'
-      },
-      {
-        name: 'React.js',
-        icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/react/react-original.svg'
-      },
-      {
-        name: 'MySQL',
-        icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/mysql/mysql-original.svg'
-      },
-      {
-        name: 'HTML',
-        icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/html5/html5-original.svg'
-      },
-      {
-        name: 'CSS',
-        icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/css3/css3-original.svg'
-      }
-    ],
+import { useState, useEffect } from 'react';
 
+const ICON_MAP: Record<string, string> = {
+  JavaScript: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/javascript/javascript-original.svg',
+  TypeScript: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/typescript/typescript-original.svg',
+  PHP: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/php/php-original.svg',
+  Laravel: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/laravel/laravel-original.svg',
+  HTML: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/html5/html5-original.svg',
+  CSS: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/css3/css3-original.svg',
+  MySQL: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/mysql/mysql-original.svg',
+  Firebase: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/firebase/firebase-plain.svg',
+  Java: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/java/java-original.svg',
+  Python: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg',
+  Dart: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/dart/dart-original.svg',
+  Blade: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/laravel/laravel-original.svg',
+  default: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/github/github-original.svg'
+};
+
+const Projects = () => {
+  const [skills, setSkills] = useState<{ name: string; icon: string }[]>([]);
+
+  useEffect(() => {
+    const fetchSkills = async () => {
+      try {
+        const response = await fetch('/api/github-stats');
+        if (!response.ok) throw new Error('Failed to fetch');
+        const data = await response.json();
+
+        // 1. Ambil dari GitHub
+        const githubSkills = (data.langData || []).map((l: any) => ({
+          name: l.name,
+          icon: ICON_MAP[l.name] || ICON_MAP.default
+        }));
+
+        // 2. Gabungkan dengan Skill Manual (MySQL, Firestore/NoSQL)
+        const manualSkills = [
+          { name: 'MySQL', icon: ICON_MAP.MySQL },
+          { name: 'NoSQL (Firestore)', icon: ICON_MAP.Firebase },
+        ];
+
+        // 3. Filter unik buat kalau-kalau ada duplikat
+        const combined = [...githubSkills, ...manualSkills];
+        const unique = combined.filter((v, i, a) => a.findIndex(t => t.name === v.name) === i);
+        
+        setSkills(unique);
+      } catch (err) {
+        console.error('Error loading skills:', err);
+        // Fallback default jika API mati
+        setSkills([
+          { name: 'PHP & Laravel', icon: ICON_MAP.PHP },
+          { name: 'JavaScript', icon: ICON_MAP.JavaScript },
+          { name: 'MySQL', icon: ICON_MAP.MySQL },
+          { name: 'NoSQL (Firestore)', icon: ICON_MAP.Firebase },
+        ]);
+      }
+    };
+
+    fetchSkills();
+  }, []);
+
+  const technicalSkills = {
     tools: [
       { name: 'VS Code', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/vscode/vscode-original.svg' },
       { name: 'Git', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/git/git-original.svg' },
-      { name: 'Firebase', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/firebase/firebase-plain.svg' },
       { name: 'Figma', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/figma/figma-original.svg' }
     ]
   };
@@ -58,10 +89,10 @@ const Projects = () => {
                 Teknologi
               </h3>
               <div className="flex flex-wrap gap-3">
-                {technicalSkills.programming.map((skill, index) => (
+                {skills.map((skill, index) => (
                   <div
                     key={index}
-                    className="flex items-center gap-2 bg-gray-50 px-3 py-2 rounded-md"
+                    className="flex items-center gap-2 bg-gray-50 px-3 py-2 rounded-md transition-all hover:bg-gray-100"
                   >
                     <img
                       src={skill.icon}
@@ -73,6 +104,9 @@ const Projects = () => {
                     </span>
                   </div>
                 ))}
+                {skills.length === 0 && (
+                  <div className="text-sm text-gray-400 italic">Memuat keahlian...</div>
+                )}
               </div>
             </div>
 
