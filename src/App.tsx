@@ -9,11 +9,17 @@ import Portfolio from "./components/Pages/Portfolio";
 import AdminPortfolio from "./components/Pages/AdminPortfolio";
 import AdminDashboard from "./components/Pages/AdminDashboard";
 import AdminExperience from "./components/Pages/AdminExperience";
+import Login from "./components/Pages/Login";
+import ProtectedRoute from "./components/ProtectedRoute";
+import { useAnalytics } from "./utils/useAnalytics";
 
 // Komponen wrapper untuk mengkondisikan Navbar
 const AppContent = () => {
   const location = useLocation();
-  const hideNavbarPaths = ['/portfolio', '/admin', '/admin/portfolio', '/admin/experience']; // Path yang tidak ingin menampilkan navbar
+  const hideNavbarPaths = ['/portfolio', '/admin', '/admin/portfolio', '/admin/experience', '/login']; // Path yang tidak ingin menampilkan navbar
+  
+  // Auto-track page views & interactions across the entire app
+  useAnalytics();
   
   return (
     <div className="font-montserrat bg-white text-[#2c2a28]">
@@ -31,9 +37,12 @@ const AppContent = () => {
           </>
         } />
         <Route path="/portfolio" element={<Portfolio />} />
-        <Route path="/admin" element={<AdminDashboard />} />
-        <Route path="/admin/portfolio" element={<AdminPortfolio />} />
-        <Route path="/admin/experience" element={<AdminExperience />} />
+        <Route path="/login" element={<Login />} />
+        
+        {/* Protected Admin Routes */}
+        <Route path="/admin" element={<ProtectedRoute><AdminDashboard /></ProtectedRoute>} />
+        <Route path="/admin/portfolio" element={<ProtectedRoute><AdminPortfolio /></ProtectedRoute>} />
+        <Route path="/admin/experience" element={<ProtectedRoute><AdminExperience /></ProtectedRoute>} />
       </Routes>
     </div>
   );
