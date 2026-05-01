@@ -12,8 +12,10 @@ import {
   serverTimestamp 
 } from 'firebase/firestore';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Plus, Trash2, Edit2, Save, X, Briefcase, Calendar, Building2, ListTodo, Database, ChevronDown } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Plus, Trash2, Edit2, Save, X, Briefcase, Calendar, Building2, ListTodo, Database, ChevronDown, Home, LayoutDashboard, RefreshCw, LogOut, ArrowLeft } from 'lucide-react';
+import { Link, useNavigate } from 'react-router-dom';
+import { signOut } from 'firebase/auth';
+import { auth } from '../../config/firebase';
 
 interface Experience {
   id?: string;
@@ -31,7 +33,18 @@ interface GroupedExperience {
 }
 
 const AdminExperience = () => {
+  const navigate = useNavigate();
   const [groupedExperiences, setGroupedExperiences] = useState<GroupedExperience[]>([]);
+  
+  const handleLogout = async () => {
+    if (!window.confirm('Keluar dari panel admin?')) return;
+    try {
+      await signOut(auth);
+      navigate('/login');
+    } catch (err) {
+      console.error('Logout error:', err);
+    }
+  };
   const [loading, setLoading] = useState(true);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [showForm, setShowForm] = useState(false);
@@ -221,28 +234,25 @@ const AdminExperience = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 pt-24 pb-12 px-6">
-      <div className="max-w-4xl mx-auto">
-        <div className="flex flex-col md:flex-row md:items-center justify-between mb-12 gap-6">
-          <div>
-            <div className="flex items-center gap-3 mb-2">
-              <Link to="/admin" className="text-gray-400 hover:text-[#2c2a28] transition-colors">Admin Dashboard</Link>
-              <span className="text-gray-300">/</span>
-              <h1 className="text-3xl font-playfair font-light text-[#2c2a28]">Manajemen Pengalaman</h1>
-            </div>
-            <p className="text-gray-500">Kelola riwayat karir Anda secara berkelompok per perusahaan.</p>
-          </div>
-          
-          <div className="flex gap-3">
-            <button 
-              onClick={resetAndMigrate}
-              className="flex items-center gap-2 bg-gray-100 text-gray-600 px-4 py-3 rounded-xl hover:bg-gray-200 transition-all text-sm font-medium"
-              title="Gunakan ini jika urutan di database berantakan"
+    <div className="min-h-screen bg-[#F8F9FA] pb-24 md:pb-12">
+      {/* ── Sticky Header ── */}
+      <header className="sticky top-0 z-[40] bg-white/80 backdrop-blur-xl border-b border-gray-100 px-5 py-4 pt-safe">
+        <div className="max-w-7xl mx-auto flex items-center justify-between">
+          <div className="flex items-center gap-4">
+            <Link 
+              to="/admin" 
+              className="w-10 h-10 rounded-full border border-gray-100 flex items-center justify-center text-gray-400 hover:text-gray-900 hover:bg-gray-50 transition-all"
             >
-              <Database className="w-4 h-4" />
-              Reset Standar
-            </button>
-            <button 
+              <ArrowLeft size={18} />
+            </Link>
+            <div>
+              <h1 className="text-xl font-bold text-gray-900 tracking-tight">Experience</h1>
+              <p className="text-[10px] font-bold text-gray-400 uppercase tracking-[0.2em]">Management</p>
+            </div>
+          </div>
+
+          <div className="flex items-center gap-2">
+            <button
               onClick={() => {
                 setShowForm(!showForm);
                 if (!showForm) {
@@ -250,12 +260,28 @@ const AdminExperience = () => {
                   setFormData({ title: '', company: '', period: '', responsibilities: [''], order: groupedExperiences.length + 1 });
                 }
               }}
-              className="flex items-center gap-2 bg-[#2c2a28] text-white px-6 py-3 rounded-xl hover:bg-gray-800 transition-all shadow-md active:scale-95"
+              className="w-10 h-10 rounded-full bg-gray-900 text-white flex items-center justify-center hover:bg-black transition-all shadow-lg shadow-gray-900/20 active:scale-90"
+              title="Tambah Pengalaman"
             >
-              {showForm ? <X className="w-4 h-4" /> : <Plus className="w-4 h-4" />}
-              {showForm ? 'Batal' : 'Tambah Baru'}
+              {showForm ? <X size={20} /> : <Plus size={20} />}
             </button>
           </div>
+        </div>
+      </header>
+
+      <div className="max-w-4xl mx-auto px-6 mt-12">
+        <div className="mb-12 flex justify-between items-end">
+          <div>
+            <p className="text-gray-500 font-medium">Kelola riwayat karir Anda secara berkelompok per perusahaan.</p>
+          </div>
+          <button 
+            onClick={resetAndMigrate}
+            className="flex items-center gap-2 bg-white border border-gray-200 text-gray-600 px-4 py-2.5 rounded-2xl hover:bg-gray-50 transition-all text-xs font-bold uppercase tracking-wider"
+            title="Gunakan ini jika urutan di database berantakan"
+          >
+            <Database className="w-4 h-4" />
+            Reset Data
+          </button>
         </div>
 
         {/* Add/Edit Form */}
@@ -468,6 +494,28 @@ const AdminExperience = () => {
               </div>
             ))
           )}
+        </div>
+      </div>
+
+      {/* Floating Action Bar (Mobile Only) */}
+      <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-[50] md:hidden">
+        <div className="bg-white/90 backdrop-blur-xl border border-gray-200/50 px-6 py-3 rounded-full shadow-2xl flex items-center gap-6">
+          <Link to="/admin" className="text-gray-400 hover:text-indigo-500">
+            <Home size={22} />
+          </Link>
+          <Link to="/admin/portfolio" className="text-gray-400 hover:text-indigo-500">
+            <LayoutDashboard size={22} />
+          </Link>
+          <Link to="/admin/experience" className="text-gray-900">
+            <Briefcase size={22} />
+          </Link>
+          <div className="w-px h-6 bg-gray-100" />
+          <button onClick={() => fetchExperiences()} className="text-gray-400">
+            <RefreshCw size={20} className={loading ? 'animate-spin' : ''} />
+          </button>
+          <button onClick={handleLogout} className="text-red-400">
+            <LogOut size={22} />
+          </button>
         </div>
       </div>
     </div>

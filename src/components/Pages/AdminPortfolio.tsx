@@ -25,8 +25,17 @@ import {
   Search,
   CheckCircle,
   AlertCircle,
-  Loader2
+  Loader2,
+  LayoutDashboard,
+  Briefcase,
+  RefreshCw,
+  LogOut,
+  ArrowLeft,
+  Home
 } from 'lucide-react';
+import { Link, useNavigate } from 'react-router-dom';
+import { signOut } from 'firebase/auth';
+import { auth } from '../../config/firebase';
 
 // Modal Component dengan optimasi mobile
 const Modal = ({ isOpen, onClose, title, children }: { 
@@ -117,6 +126,7 @@ const SkeletonCard = () => (
 );
 
 const AdminPortfolio = () => {
+  const navigate = useNavigate();
   const [portfolioItems, setPortfolioItems] = useState<PortfolioItem[]>([]);
   const [initialLoading, setInitialLoading] = useState(true);
   const [editingItem, setEditingItem] = useState<PortfolioItem | null>(null);
@@ -125,6 +135,16 @@ const AdminPortfolio = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [alert, setAlert] = useState<{ message: string; type: 'success' | 'error' } | null>(null);
+
+  const handleLogout = async () => {
+    if (!window.confirm('Keluar dari panel admin?')) return;
+    try {
+      await signOut(auth);
+      navigate('/login');
+    } catch (err) {
+      console.error('Logout error:', err);
+    }
+  };
   
   const [formData, setFormData] = useState<Partial<PortfolioItem>>({
     title: '',
@@ -331,7 +351,7 @@ const AdminPortfolio = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-[#F8F9FA] selection:bg-gray-900 selection:text-white pb-safe">
+    <div className="min-h-screen bg-[#F8F9FA] selection:bg-gray-900 selection:text-white pb-24 md:pb-12">
       {/* Alert */}
       {alert && (
         <Alert 
@@ -341,71 +361,83 @@ const AdminPortfolio = () => {
         />
       )}
 
-      {/* Header & Search Bar - Unified Mobile First */}
-      <div className="sticky top-0 z-30 bg-[#F8F9FA]/80 backdrop-blur-xl border-b border-gray-200/50 pb-3 pt-safe">
-        <div className="px-5 pt-4 pb-2 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <h1 className="text-[28px] font-bold tracking-tight text-gray-900">
-              Portfolio
-            </h1>
-            {!initialLoading && (
-              <span className="bg-gray-900 text-white text-xs font-semibold px-2.5 py-1 rounded-full">
-                {filteredItems.length}
-              </span>
-            )}
+      {/* ── Sticky Header ── */}
+      <header className="sticky top-0 z-[40] bg-white/80 backdrop-blur-xl border-b border-gray-100 px-5 py-4 pt-safe">
+        <div className="max-w-7xl mx-auto flex items-center justify-between">
+          <div className="flex items-center gap-4">
+            <Link 
+              to="/admin" 
+              className="w-10 h-10 rounded-full border border-gray-100 flex items-center justify-center text-gray-400 hover:text-gray-900 hover:bg-gray-50 transition-all"
+            >
+              <ArrowLeft size={18} />
+            </Link>
+            <div>
+              <h1 className="text-xl font-bold text-gray-900 tracking-tight">Portfolio</h1>
+              <p className="text-[10px] font-bold text-gray-400 uppercase tracking-[0.2em]">Management</p>
+            </div>
+          </div>
+
+          <div className="flex items-center gap-2">
+            <button
+              onClick={openAddModal}
+              className="w-10 h-10 rounded-full bg-gray-900 text-white flex items-center justify-center hover:bg-black transition-all shadow-lg shadow-gray-900/20 active:scale-90"
+              title="Tambah Project"
+            >
+              <Plus size={20} />
+            </button>
+          </div>
+        </div>
+      </header>
+
+      {/* Search and Filter */}
+      <div className="max-w-7xl mx-auto px-5 mt-6">
+        <div className="flex gap-3">
+          <div className="flex-1 relative group">
+            <Search size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-gray-900 transition-colors" />
+            <input
+              type="text"
+              placeholder="Search projects..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="w-full pl-11 pr-4 py-3.5 bg-white hover:bg-gray-50 border-0 rounded-2xl shadow-sm text-base focus:ring-2 focus:ring-gray-900 focus:outline-none transition-all placeholder:text-gray-400"
+              style={{ fontSize: '16px' }}
+            />
+          </div>
+          <div className="flex gap-1.5 p-1 bg-white shadow-sm rounded-2xl">
+            <button
+              onClick={() => setViewMode('grid')}
+              className={`p-2.5 rounded-xl transition-all ${
+                viewMode === 'grid' ? 'bg-gray-100 text-gray-900' : 'text-gray-400 hover:text-gray-700'
+              }`}
+            >
+              <Grid3x3 size={20} />
+            </button>
+            <button
+              onClick={() => setViewMode('list')}
+              className={`p-2.5 rounded-xl transition-all ${
+                viewMode === 'list' ? 'bg-gray-100 text-gray-900' : 'text-gray-400 hover:text-gray-700'
+              }`}
+            >
+              <List size={20} />
+            </button>
           </div>
         </div>
 
-        {/* Search and Filter */}
-        <div className="px-5 mt-2">
-          <div className="flex gap-3">
-            <div className="flex-1 relative group">
-              <Search size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-gray-900 transition-colors" />
-              <input
-                type="text"
-                placeholder="Search projects..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full pl-11 pr-4 py-3.5 bg-white hover:bg-gray-50 border-0 rounded-2xl shadow-sm text-base focus:ring-2 focus:ring-gray-900 focus:outline-none transition-all placeholder:text-gray-400"
-                style={{ fontSize: '16px' }}
-              />
-            </div>
-            <div className="flex gap-1.5 p-1 bg-white shadow-sm rounded-2xl">
-              <button
-                onClick={() => setViewMode('grid')}
-                className={`p-2.5 rounded-xl transition-all ${
-                  viewMode === 'grid' ? 'bg-gray-100 text-gray-900' : 'text-gray-400 hover:text-gray-700'
-                }`}
-              >
-                <Grid3x3 size={20} />
-              </button>
-              <button
-                onClick={() => setViewMode('list')}
-                className={`p-2.5 rounded-xl transition-all ${
-                  viewMode === 'list' ? 'bg-gray-100 text-gray-900' : 'text-gray-400 hover:text-gray-700'
-                }`}
-              >
-                <List size={20} />
-              </button>
-            </div>
-          </div>
-
-          {/* Categories Horizontal Scroll */}
-          <div className="flex gap-2 mt-4 overflow-x-auto pb-2 scrollbar-hide -mx-5 px-5">
-            {categories.map((cat) => (
-              <button
-                key={cat}
-                onClick={() => setSelectedCategory(cat)}
-                className={`px-5 py-2.5 text-sm font-medium whitespace-nowrap rounded-full transition-all flex items-center justify-center ${
-                  selectedCategory === cat
-                    ? 'bg-gray-900 text-white shadow-md shadow-gray-900/20'
-                    : 'bg-white border border-gray-200/60 text-gray-600 hover:border-gray-300 hover:bg-gray-50 shadow-sm'
-                }`}
-              >
-                {cat === 'all' ? 'All Projects' : cat}
-              </button>
-            ))}
-          </div>
+        {/* Categories Horizontal Scroll */}
+        <div className="flex gap-2 mt-4 overflow-x-auto pb-2 scrollbar-hide -mx-5 px-5">
+          {categories.map((cat) => (
+            <button
+              key={cat}
+              onClick={() => setSelectedCategory(cat)}
+              className={`px-5 py-2.5 text-sm font-medium whitespace-nowrap rounded-full transition-all flex items-center justify-center ${
+                selectedCategory === cat
+                  ? 'bg-gray-900 text-white shadow-md shadow-gray-900/20'
+                  : 'bg-white border border-gray-200/60 text-gray-600 hover:border-gray-300 hover:bg-gray-50 shadow-sm'
+              }`}
+            >
+              {cat === 'all' ? 'All Projects' : cat}
+            </button>
+          ))}
         </div>
       </div>
 
@@ -822,18 +854,27 @@ const AdminPortfolio = () => {
         </form>
       </Modal>
 
-      {/* Floating Action Button untuk Mobile (FAB) */}
-      {!showModal && (
-        <button
-          onClick={openAddModal}
-          className="fixed bottom-6 right-6 md:hidden bg-gray-900 text-white p-4 rounded-full shadow-xl shadow-gray-900/30 hover:bg-gray-800 transition-all active:scale-90 z-40 flex items-center justify-center group"
-          aria-label="Tambah Portfolio"
-        >
-          <div className="relative flex items-center justify-center">
-            <Plus size={26} strokeWidth={2.5} className="group-active:rotate-90 transition-transform duration-200" />
-          </div>
-        </button>
-      )}
+      {/* Floating Action Bar (Mobile Only) */}
+      <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-[50] md:hidden">
+        <div className="bg-white/90 backdrop-blur-xl border border-gray-200/50 px-6 py-3 rounded-full shadow-2xl flex items-center gap-6">
+          <Link to="/admin" className="text-gray-400 hover:text-indigo-500">
+            <Home size={22} />
+          </Link>
+          <Link to="/admin/portfolio" className="text-gray-900">
+            <LayoutDashboard size={22} />
+          </Link>
+          <Link to="/admin/experience" className="text-gray-400 hover:text-cyan-500">
+            <Briefcase size={22} />
+          </Link>
+          <div className="w-px h-6 bg-gray-100" />
+          <button onClick={() => fetchPortfolioItems()} className="text-gray-400">
+            <RefreshCw size={20} className={initialLoading ? 'animate-spin' : ''} />
+          </button>
+          <button onClick={handleLogout} className="text-red-400">
+            <LogOut size={22} />
+          </button>
+        </div>
+      </div>
     </div>
   );
 };
