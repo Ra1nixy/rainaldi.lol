@@ -16,11 +16,9 @@ import {
   RefreshCw,
   BarChart2,
   Calendar,
-  ArrowUpRight,
   Activity,
   LogOut,
   Trash2,
-  ChevronDown,
   ArrowLeft
 } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
